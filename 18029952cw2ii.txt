@@ -1,0 +1,217 @@
+#!/bin/bash
+
+#asking the user for his user name and the ID
+
+if [ $# = 2 ]
+then
+if ! [[ $1 =~ ^[0-9]+$ && $2 =~ ^[A-Za-z]+$ ]]
+
+then
+	echo "---->Please provide the parameter in proper format<-----"
+	exit
+	else
+		
+	#declearing the password
+	Password="youilove"
+
+	#setting the counter
+	counter=1
+
+	#using until loop for validating the user input
+until [ $counter -gt 5 ]
+do
+			#asking the user to enter the password to proceed
+			#-s refers to the enter the password in silent way
+	read -sp " Please enter the password to proceed: " key
+	if [ "$key" == "$Password" ]
+	then
+		printf "  \n \t\t!!!!!!!!!!!!!!! Hello U-ID:- $1 UserName:- $2 !!!!!!!!!!!!!!!! \n \t\t\t\t Welcome to My simple program: \t\t\t\t\t Executed At:$(date)\n"
+		break
+	else
+		echo -e "\n ---->OOOPs! Wrong one try Again :( <---- "
+	fi
+		##THE  value of counter keeps on increasing by 1 times each time the loop is entered
+
+		#prompt the user if the user enters the invalid password for three times
+	if [ $counter -eq 3 ]
+	then
+		echo -e " Your password was incorrect for 3 times :\n Last 2 chance remaining :- "
+	fi
+
+	#prompt the user if the user enters the invalid password for three times
+
+	if [ $counter -eq 4 ]
+	then
+		echo -e "\n Last One chance remaining :- "
+	fi
+
+	 #displaying the message if the user enters the incorrect password continiously for 5 times
+	if [ $counter -eq 5 ]
+	then
+		echo -e " The program has been terminated==> \n Your password was incorrect for 5 times :(:("
+		exit
+
+	fi
+	((counter++))
+done
+
+function yesNo(){ #function for for prompting yes or no for the user
+	#using while loop
+	while true; do
+		read -p "Do you wish start the program from begining (Y/N):- " yn
+		case $yn in
+			[Yy]* ) askUser; break;;
+			[Nn]* ) echo "It was nice playing with you. :):)"; exit;;
+			* ) echo "Please answer yes or no.";;
+		esac
+done
+}
+function askUser(){
+	#displaying the list of country with their code
+
+	printf " --> (AUS) for Australia \n --> (BAN) for Bangladesh \n --> (NEP) for Nepal \n --> (IND) for India \n --> (ENG) for England\n \n"
+
+	read -p " Guess one of the best cricket team according to the country code :- " read read1
+
+	#checking if the user inputs the two or more country code
+	if [[ -z "$read1" ]]
+	then
+		echo -e "\n"
+		choice
+	else
+		echo -e "\nPlease select only one TEAM:(:( \n"
+		askUser
+	fi
+
+}
+
+function choice(){
+
+	#declearing my fav team and storing it in the variable
+
+	TEAM="ENG"
+
+	#checking whether the user Input team code matches my fav team or not
+	#reading all the user input value in upper case if they hit the smaller one
+	case ${read^^} in
+		#this first case become true if the user input is other than england team
+		#the line is en ded and the askuser function is again called
+		#THIS process repeat until user enter the correct answer
+
+		"AUS" | "BAN" | "NEP" | "IND") echo "SORRY!! You Guess the wrong team :(\n\n"; askUser
+		;;
+		"ENG") echo -e " England is the best cricket team and recently had won the ICC trophy. The England cricket team represents \n England and Wales in international cricket. Since 1997, it has been governed by the England and Wales Cricket\n Board, having been previously governed by Marylebone Cricket Club since 1903 \n "
+		;;
+
+		#this case is true if the user enter the team codes other than above mention
+		*) echo "Please type in the code of the country:- "; askUser
+	esac
+	players
+}
+function players(){
+		#displaying the list of players name with their code
+    printf " --> (PK) for Paras Khadka \n --> (RT) for Ross Taylor \n --> (VK) for Virat Kohli \n --> (BS) for Ben Stokes \n --> (DW) for David Warner \n \n "
+
+    read -p "Please type code of any three players From listed 5 seperated by space: " one two three four
+
+    if [[ -z "$four" ]]
+    then
+        if [[ -z "$one" ]] | [[ -z "$two" ]] | [[ -z "$three" ]] #checking if the user input for the players name is empty
+        then
+            echo -e "\n Please select 3 players from above mention list:( not less than that \n"
+            players
+        fi
+    else
+        echo -e "\nYou need to select only three players not more than that :( :( \n"
+        players
+    fi
+
+    #checking if the user has input the players code repeatedly
+
+    if [ "$one" == "$two" ]
+    then
+        echo -e "\nYou have enter the player code repeatedly:(:(\nPlease enter three different players code\n: "
+        players
+	fi
+	if [ "$two" == "$three" ]
+	then
+		echo -e "\nYou have enter the player code repeatedly:(:(\nPlease enter three different players code\n: "
+		players
+	fi
+	if [ "$one" == "$three" ]
+	then
+		echo -e "\nYou have enter the player code repeatedly:(:(\n Please enter three different players code\n: "
+		players
+	fi
+	playerValidation
+}
+
+	#this function is for validating the user input
+	#this function is called at the end of the above function
+	#the user input values for three players stored in the variabes on two and three
+	#the values of these variables is compared to the player Id
+function playerValidation(){
+	case ${one^^} in
+
+		"PK" | "VK" | "RT" | "DW" | "BS")
+
+	#using nested case statements to verify that all the values that the user has provided is from the given players code
+		case ${two^^} in
+			"PK" | "VK" | "RT" | "DW" | "BS")
+
+			case ${three^^} in
+				"PK" | "VK" | "RT" | "DW" | "BS") selectPlayers;;
+
+				*) echo -e "\n Your ID for the 3rd player is not correct: "; players
+			esac
+			;;
+			*) echo -e "\n Your ID for the 2nd player is not correct: "; players
+		esac
+        ;;
+		*) echo -e "\n Your ID for the 1st player is not correct: "; players
+	esac
+
+                }
+function selectPlayers(){
+
+	#prompting the diaglog and asking the user input in three parameters
+	PS3=" Choose the your Favourite one:- "
+	select Players in ${one^^} ${two^^} ${three^^}
+	do
+		if [[ -z $Players ]]
+		then
+			echo " Please select from the above mention list -: "
+			selectPlayers
+		elif [ "$Players" == "BS" ]
+		then
+			printf "\n"
+			cat players/BS #opening the file of Ben Strokes if the user input is BS
+			printf "\n"
+			yesNo
+
+		elif [ "$Players" == "PK" ]
+		then
+			printf "\n"
+			cat players/PK #opening the file of paras khadka if the user input is PK
+			printf "\n"
+			yesNo
+		elif [ "$Players" == "VK" ]
+		then
+			printf "\n"
+			cat players/VK #opening the file of Virat kohli if the user input is VK
+			printf "\n"
+			yesNo
+		else
+			#this else statement is executed if the user choose the players whose files are not been created
+			#here it ask the user if they want to go in the previous step or they want to terminate
+			echo -e " The file matching your information is absent :(:( "
+			yesNo
+		fi
+	done
+}
+	askUser
+fi
+else
+	echo -e " -------->Please start the program providing two parameters<---------\n First User ID and Second User Name"
+	exit
+fi
